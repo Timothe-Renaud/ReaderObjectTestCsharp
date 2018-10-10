@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,20 +11,36 @@ namespace ReaderObject
 {
     class Bdd
     {
-        public OracleConnection CnOracle { get; set; }
-
-        /// <summary>
-        /// Constructeur de Bdd.
-        /// </summary>
-        public Bdd()
+        public static System.Data.Common.DbConnection GetConnection
         {
-            string ch = String.Format(ConfigurationManager.ConnectionStrings["oracle"].ToString(),
+            get
+            {
+
+                DbProviderFactory factory = DbProviderFactories.GetFactory("Oracle.DataAccess.Client");
+                DbConnection cnx = factory.CreateConnection();
+                string ch = String.Format(ConfigurationManager.ConnectionStrings["Oracle"].ToString(),
                 ConfigurationManager.AppSettings["SERVER"],
                 ConfigurationManager.AppSettings["PORTIN"],
                 ConfigurationManager.AppSettings["SID"],
                 ConfigurationManager.AppSettings["LOGIN"],
                 ConfigurationManager.AppSettings["PASSWORD"]);
-            CnOracle = new OracleConnection(ch);
+
+
+                cnx.ConnectionString = ch;
+                return cnx;
+            }
         }
+
+        public static DbCommand GetDbCommand
+        {
+            get
+            {
+                string fournisseurDeDonnees = ConfigurationManager.AppSettings["Provider"];
+                DbProviderFactory fctry = DbProviderFactories.GetFactory(fournisseurDeDonnees);
+                DbCommand cmmd = fctry.CreateCommand();
+                return cmmd;
+            }
+        }
+
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,20 +12,30 @@ namespace ReaderObject
     class EmployeServices
     {
 
-        private OracleConnection cnOracle;
+        private static EmployeServices instance;
 
-        public EmployeServices()
+        public static EmployeServices Instance
+        {
+            get
+            {
+                return instance ?? (instance = new EmployeServices());
+            }
+        }
+
+        public DbConnection MaConnexion { get; private set; }
+
+        /*public EmployeServices()
         {
             Bdd bdd = new Bdd();
-            cnOracle = bdd.CnOracle;
-        }
+            cnOracle = bdd.cnOracle;
+        }*/
 
         /// <summary>
         /// HydrateEmploye ->
         /// </summary>
         /// <param name="readerEmploye"></param>
         /// <returns></returns>
-        public static Employe HydrateEmploye(OracleDataReader readerEmploye)
+        public static Employe HydrateEmploye(DbDataReader readerEmploye)
         {
             Employe employe = new Employe();
             employe.Numemp = Convert.ToInt16(readerEmploye["NUMEMP"]);
@@ -57,23 +68,26 @@ namespace ReaderObject
         /// FinAllEmployes ->
         /// </summary>
         /// <returns></returns>
-        public List<Employe> FindAllEmplolyes()
+        public List<Employe> FindAllEmployes()
         {
             List<Employe> employes = new List<Employe>();
             try
             {
-                using (OracleCommand cmdTousLesEmploes = new OracleCommand(@"SELECT * from employe;", cnOracle))
+                using (DbCommand cmdTousLesEmployes = Bdd.GetDbCommand)
                 {
-                    cnOracle.Open();
-                    OracleDataReader rdr = cmdTousLesEmploes.ExecuteReader();
-                    while (rdr.Read())
+                    cmdTousLesEmployes.CommandText = "select * from EMPLOYE";
+                    cmdTousLesEmployes.Connection = MaConnexion;
+                    MaConnexion.Open();
+                    DbDataReader rdrEmploye = cmdTousLesEmployes.ExecuteReader();
+      
+                    while (rdrEmploye.Read())
                     {
-                        Employe employe = HydrateEmploye(rdr);
+                        Employe employe = HydrateEmploye(rdrEmploye);
                         employes.Add(employe);
                     }
-                    rdr.Close();
+                    rdrEmploye.Close();
                 }
-                cnOracle.Close();
+                MaConnexion.Close();
             }
             catch (Exception ex)
             {

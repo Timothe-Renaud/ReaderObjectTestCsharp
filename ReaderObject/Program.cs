@@ -12,23 +12,25 @@ namespace ReaderObject
     {
         static void Main(string[] args)
         {
-            List<Employe> emp = new List<Employe>();
-            //info pour la connexion la la BD
-            string Chn = @"Server = freesio.lyc-bonaparte.fr; Database = LangloisSQL; Integrated Secuity = true;";
-            //OracleConnection connection = new OracleConnection(Chn);
-
-
-            //parcours des employes
-            List<Employe> employes;
-            EmployeServices servicesEmploye = new EmployeServices();
-            employes = servicesEmploye.FindAllEmplolyes();
-            foreach (Employe employe in employes)
+            try
             {
-                Console.WriteLine(employe);
+                //List<Employe> employes;
+                //EmployeServices servicesEmploye = new EmployeServices();
+                //employes = servicesEmploye.FindAllEmployes();
+                foreach (Employe employe in EmployeServices.Instance.FindAllEmployes())
+                {
+                    Console.WriteLine(employe);
+                }
+                Console.WriteLine("-------------------------------------");
+                Console.WriteLine(EmployeServices.Instance.FindEmployeById(4));
+
+                Console.ReadKey();
             }
-            Console.WriteLine("-------------------------------------");
-            Employe unEmploye = servicesEmploye.FindEmployeById(4);
-            Console.WriteLine(unEmploye);
+            catch (Exception)
+            {
+
+                throw new Exception ("petit probleme :(");
+            }
             
         }
     }
