@@ -15,7 +15,7 @@ namespace ReaderObject
             List<Employe> emp = new List<Employe>();
             //info pour la connexion la la BD
             string Chn = @"Server = freesio.lyc-bonaparte.fr; Database = LangloisSQL; Integrated Secuity = true;";
-            OracleConnection connection = new OracleConnection(Chn);
+            //OracleConnection connection = new OracleConnection(Chn);
 
 
             //parcours des employes

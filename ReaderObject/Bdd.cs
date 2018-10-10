@@ -12,14 +12,17 @@ namespace ReaderObject
     {
         public OracleConnection CnOracle { get; set; }
 
+        /// <summary>
+        /// Constructeur de Bdd.
+        /// </summary>
         public Bdd()
         {
             string ch = String.Format(ConfigurationManager.ConnectionStrings["oracle"].ToString(),
-                ConfigurationManager.AppSettings["SERVEUR"],
-                ConfigurationManager.AppSettings["PORT"],
+                ConfigurationManager.AppSettings["SERVER"],
+                ConfigurationManager.AppSettings["PORTIN"],
                 ConfigurationManager.AppSettings["SID"],
-                ConfigurationManager.AppSettings["USERID"],
-                ConfigurationManager.AppSettings["PWD"]);
+                ConfigurationManager.AppSettings["LOGIN"],
+                ConfigurationManager.AppSettings["PASSWORD"]);
             CnOracle = new OracleConnection(ch);
         }
     }
