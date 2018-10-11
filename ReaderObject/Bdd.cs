@@ -15,17 +15,16 @@ namespace ReaderObject
         {
             get
             {
-
-                DbProviderFactory factory = DbProviderFactories.GetFactory("Oracle.DataAccess.Client");
+                string fournisseurDeDonnees = ConfigurationManager.AppSettings["PROVIDER"];
+                DbProviderFactory factory = DbProviderFactories.GetFactory("PROVIDER");
                 DbConnection cnx = factory.CreateConnection();
-                string ch = String.Format(ConfigurationManager.ConnectionStrings["Oracle"].ToString(),
+
+                string ch = String.Format(ConfigurationManager.ConnectionStrings["fournisseurDeDonnees"].ToString(),
                 ConfigurationManager.AppSettings["SERVER"],
                 ConfigurationManager.AppSettings["PORTIN"],
                 ConfigurationManager.AppSettings["SID"],
                 ConfigurationManager.AppSettings["LOGIN"],
                 ConfigurationManager.AppSettings["PASSWORD"]);
-
-
                 cnx.ConnectionString = ch;
                 return cnx;
             }

@@ -22,7 +22,7 @@ namespace ReaderObject
             }
         }
 
-        public DbConnection MaConnexion { get; private set; }
+        public DbConnection maConnexion { get; private set; }
 
         /*public EmployeServices()
         {
@@ -70,14 +70,15 @@ namespace ReaderObject
         /// <returns></returns>
         public List<Employe> FindAllEmployes()
         {
+
             List<Employe> employes = new List<Employe>();
             try
             {
                 using (DbCommand cmdTousLesEmployes = Bdd.GetDbCommand)
                 {
                     cmdTousLesEmployes.CommandText = "select * from EMPLOYE";
-                    cmdTousLesEmployes.Connection = MaConnexion;
-                    MaConnexion.Open();
+                    cmdTousLesEmployes.Connection = maConnexion;
+                    maConnexion.Open();
                     DbDataReader rdrEmploye = cmdTousLesEmployes.ExecuteReader();
 
                     while (rdrEmploye.Read())
@@ -87,7 +88,7 @@ namespace ReaderObject
                     }
                     rdrEmploye.Close();
                 }
-                MaConnexion.Close();
+                maConnexion.Close();
             }
             catch (Exception ex)
             {
@@ -104,31 +105,33 @@ namespace ReaderObject
         /// <returns></returns>
         public Employe FindEmployeById(Int16 id)
         {
-            Employe employe = null;
-            try
+            using (DbCommand cmdTousLesEmployes = Bdd.GetDbCommand)
             {
-                OracleParameter pId = new OracleParameter("numemp", OracleDbType.Int16, System.Data.ParameterDirection.Input);
-                pId.Value = id;
-                cmdTousLesEmployes.Parameters.Add(pId);
-                cnOracle.Open();
-                OracleDataReader readerEmploye = cmdTousLesEmployes.ExecuteReader();
-                if (readerEmploye.Read())
+                Employe employe = null;
+                try
                 {
-                    employe = HydrateEmploye(readerEmploye);
+                    using (DbCommand cmdTousLesEmployes = Bdd.GetDbCommand)
+                    {
+                        cmdTousLesEmployes.CommandText = "select * from EMPLOYE where numemp: numemp";
+                        cmdTousLesEmployes.Connection = maConnexion;
+
+                        maConnexion.Open();
+                        OracleDataReader readerEmploye = cmdTousLesEmployes.ExecuteReader();
+                        if (readerEmploye.Read())
+                        {
+                            employe = HydrateEmploye(readerEmploye);
+                        }
+                        readerEmploye.Close();
+                    }
                 }
-                readerEmploye.Close();                
+                catch (Exception ex)
+                {
+
+                    Console.WriteLine(ex.Message);
+                }
+                return employe;
+
             }
-            catch (Exception ex)
-            {
-
-                Console.WriteLine(ex.Message);
-            }
-            return employe;
-
-
         }
-
-
-
     }
 }
