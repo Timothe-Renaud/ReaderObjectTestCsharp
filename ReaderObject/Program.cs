@@ -12,26 +12,18 @@ namespace ReaderObject
     {
         static void Main(string[] args)
         {
-            try
+            List<Employe> employes;
+            EmployeServices servicesEmploye = new EmployeServices();
+            employes = servicesEmploye.FindAllEmployes();
+            foreach (Employe employe in EmployeServices.Instance.FindAllEmployes())
             {
-                //List<Employe> employes;
-                //EmployeServices servicesEmploye = new EmployeServices();
-                //employes = servicesEmploye.FindAllEmployes();
-                foreach (Employe employe in EmployeServices.Instance.FindAllEmployes())
-                {
-                    Console.WriteLine(employe);
-                }
-                Console.WriteLine("-------------------------------------");
-                Console.WriteLine(EmployeServices.Instance.FindEmployeById(4));
-
-                Console.ReadKey();
+                Console.WriteLine(employe);
             }
-            catch (Exception)
-            {
+            Console.WriteLine("-------------------------------------");
+            Console.WriteLine(EmployeServices.Instance.FindEmployeByID(4));
 
-                throw new Exception ("petit probleme :(");
-            }
-            
+            Console.ReadKey();
+
         }
     }
 }

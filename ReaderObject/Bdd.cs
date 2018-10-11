@@ -30,7 +30,7 @@ namespace ReaderObject
             }
         }
 
-        public static DbCommand GetDbCommand
+        public static DbCommand GetDbCommande
         {
             get
             {

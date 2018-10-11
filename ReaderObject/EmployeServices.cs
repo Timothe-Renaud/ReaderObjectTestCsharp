@@ -73,7 +73,7 @@ namespace ReaderObject
             List<Employe> employes = new List<Employe>();
             try
             {
-                using (DbCommand cmdTousLesEmployes = Bdd.GetDbCommand)
+                using (DbCommand cmdTousLesEmployes = Bdd.GetDbCommande)
                 {
                     cmdTousLesEmployes.CommandText = "select * from EMPLOYE";
                     cmdTousLesEmployes.Connection = maConnexion;
@@ -102,33 +102,40 @@ namespace ReaderObject
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public Employe FindEmployeById(Int16 id)
+        public Employe FindEmployeByID(Int16 id)
         {
-            using (DbCommand cmdTousLesEmployes = Bdd.GetDbCommand)
-            {
-                Employe employe = null;
-                try
-                {
-                    cmdTousLesEmployes.CommandText = "select * from EMPLOYE where numemp: numemp";
-                    cmdTousLesEmployes.Connection = maConnexion;
+            var MaConnexion = Bdd.GetConnection;
+            Employe employe = null;
 
-                    maConnexion.Open();
+            try
+            {
+
+                DbCommand cmdTousLesEmployes = Bdd.GetDbCommande;
+                {
+                    DbParameter pID = cmdTousLesEmployes.CreateParameter();
+                    pID.ParameterName = "numemp";
+                    pID.Direction = System.Data.ParameterDirection.Input;
+                    pID.DbType = System.Data.DbType.Int16;
+                    pID.Value = id;
+                    cmdTousLesEmployes.Parameters.Add(pID);
+                    cmdTousLesEmployes.CommandText = "select * from EMPLOYE where numemp = :numemp";
+                    cmdTousLesEmployes.Connection = MaConnexion;
+                    MaConnexion.Open();
                     DbDataReader readerEmploye = cmdTousLesEmployes.ExecuteReader();
                     if (readerEmploye.Read())
                     {
                         employe = HydrateEmploye(readerEmploye);
                     }
                     readerEmploye.Close();
-
                 }
-                catch (Exception ex)
-                {
-
-                    Console.WriteLine(ex.Message);
-                }
-                return employe;
-
+                MaConnexion.Close();
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            return employe;
+
         }
     }
 }
