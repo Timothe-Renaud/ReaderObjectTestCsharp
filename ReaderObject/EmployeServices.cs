@@ -79,7 +79,7 @@ namespace ReaderObject
                     cmdTousLesEmployes.Connection = MaConnexion;
                     MaConnexion.Open();
                     DbDataReader rdrEmploye = cmdTousLesEmployes.ExecuteReader();
-      
+
                     while (rdrEmploye.Read())
                     {
                         Employe employe = HydrateEmploye(rdrEmploye);
@@ -105,32 +105,27 @@ namespace ReaderObject
         public Employe FindEmployeById(Int16 id)
         {
             Employe employe = null;
-            using (cnOracle)
+            try
             {
-                try
+                OracleParameter pId = new OracleParameter("numemp", OracleDbType.Int16, System.Data.ParameterDirection.Input);
+                pId.Value = id;
+                cmdTousLesEmployes.Parameters.Add(pId);
+                cnOracle.Open();
+                OracleDataReader readerEmploye = cmdTousLesEmployes.ExecuteReader();
+                if (readerEmploye.Read())
                 {
-                    using (OracleCommand cmdTousLesEmployes = new OracleCommand(@"select * from employe where numemp= :nnumemp", cnOracle))
-                    {
-                        OracleParameter pId = new OracleParameter("numemp", OracleDbType.Int16, System.Data.ParameterDirection.Input);
-                        pId.Value = id;
-                        cmdTousLesEmployes.Parameters.Add(pId);
-                        cnOracle.Open();
-                        OracleDataReader readerEmploye = cmdTousLesEmployes.ExecuteReader();
-                        if (readerEmploye.Read())
-                        {
-                            employe = HydrateEmploye(readerEmploye);
-                        }
-                        readerEmploye.Close();
-                    }
-                    cnOracle.Close();
+                    employe = HydrateEmploye(readerEmploye);
                 }
-                catch (Exception ex)
-                {
-
-                    Console.WriteLine(ex.Message);
-                }
-                return employe;
+                readerEmploye.Close();                
             }
+            catch (Exception ex)
+            {
+
+                Console.WriteLine(ex.Message);
+            }
+            return employe;
+
+
         }
 
 
