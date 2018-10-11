@@ -24,11 +24,10 @@ namespace ReaderObject
 
         public DbConnection maConnexion { get; private set; }
 
-        /*public EmployeServices()
+        public EmployeServices()
         {
             Bdd bdd = new Bdd();
-            cnOracle = bdd.cnOracle;
-        }*/
+        }
 
         /// <summary>
         /// HydrateEmploye ->
@@ -110,19 +109,17 @@ namespace ReaderObject
                 Employe employe = null;
                 try
                 {
-                    using (DbCommand cmdTousLesEmployes = Bdd.GetDbCommand)
-                    {
-                        cmdTousLesEmployes.CommandText = "select * from EMPLOYE where numemp: numemp";
-                        cmdTousLesEmployes.Connection = maConnexion;
+                    cmdTousLesEmployes.CommandText = "select * from EMPLOYE where numemp: numemp";
+                    cmdTousLesEmployes.Connection = maConnexion;
 
-                        maConnexion.Open();
-                        OracleDataReader readerEmploye = cmdTousLesEmployes.ExecuteReader();
-                        if (readerEmploye.Read())
-                        {
-                            employe = HydrateEmploye(readerEmploye);
-                        }
-                        readerEmploye.Close();
+                    maConnexion.Open();
+                    DbDataReader readerEmploye = cmdTousLesEmployes.ExecuteReader();
+                    if (readerEmploye.Read())
+                    {
+                        employe = HydrateEmploye(readerEmploye);
                     }
+                    readerEmploye.Close();
+
                 }
                 catch (Exception ex)
                 {
